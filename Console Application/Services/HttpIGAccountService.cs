@@ -15,12 +15,14 @@ namespace Console_Application.Services
         #region Public Properties
 
         public RestClient Client { get; set; }
+        public IGApiAccount Account { get; set; }
 
         #endregion
 
         #region Private variables
 
         private bool _initilized = false;
+        private const string URL = "https://demo-api.ig.com/gateway/deal";
 
         #endregion
 
@@ -41,11 +43,16 @@ namespace Console_Application.Services
             try
             {
                 Client = new RestClient(url);
+                Account = account;
 
-                if (Authenticate(account).StatusCode == HttpStatusCode.OK)
+                Client.AddDefaultHeaders(new Dictionary<string, string>()
                 {
-                    _initilized = true;
-                }
+                    {"Content-Type", "application/json; charset=UTF-8"},
+                    {"Accept", "application/json; charset=UTF-8"},
+                    {"X-IG-API-KEY", Account.ApiKey}
+                });
+
+                Authenticate();
             }
             catch (Exception)
             {
@@ -53,23 +60,23 @@ namespace Console_Application.Services
             }
         }
 
-        public IRestResponse Authenticate(IGApiAccount account)
+        public IRestResponse Authenticate()
         {
-            if (_initilized) return null;
+            try
+            {
+                var request = new RestRequest("session", Method.POST)
+                    .AddJsonBody(new { identifier = Account.Username, password = Account.Password, encryptedPassword = "" });
 
-            var request = new RestRequest("session", Method.POST);
+                var response = Client.Execute(request);
 
-            request.AddJsonBody(new { identifier = account.Username, password = account.Password, encryptedPassword = "" });
-            request.AddHeader("X-IG-API-KEY", account.ApiKey);
-            request.AddHeader("Version", "2");
-            request.AddHeader("Content-Type", "application/json; charset=UTF-8");
-            request.AddHeader("Accept", "application/json; charset=UTF-8");
+                Console.WriteLine(response.Content);
 
-            var response = Client.Post(request);
-
-            Console.WriteLine(response.Content);
-
-            return response;
+                return response;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
     }
 }
