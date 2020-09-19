@@ -65,6 +65,7 @@ namespace Console_Application.Services
             try
             {
                 var request = new RestRequest("session", Method.POST)
+                    .AddHeader("Version", "2")
                     .AddJsonBody(new { identifier = Account.Username, password = Account.Password, encryptedPassword = "" });
 
                 var response = Client.Execute(request);
