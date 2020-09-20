@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Console_Application.Services
 {
@@ -16,6 +17,7 @@ namespace Console_Application.Services
 
         public RestClient Client { get; set; }
         public IGApiAccount Account { get; set; }
+        public AccountDetails AccountDetails { get; set; }
 
         #endregion
 
@@ -52,7 +54,10 @@ namespace Console_Application.Services
                     {"X-IG-API-KEY", Account.ApiKey}
                 });
 
-                Authenticate();
+                if (!_initilized)
+                    AccountDetails = Authenticate();
+
+                Console.WriteLine(AccountDetails.AccountType);
             }
             catch (Exception)
             {
@@ -60,7 +65,7 @@ namespace Console_Application.Services
             }
         }
 
-        public IRestResponse Authenticate()
+        public AccountDetails Authenticate()
         {
             try
             {
@@ -72,10 +77,18 @@ namespace Console_Application.Services
 
                 Console.WriteLine(response.Content);
 
-                return response;
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    //Start reauth method
+
+                    return JsonConvert.DeserializeObject<AccountDetails>(response.Content);
+                }
+
+                return null;
             }
             catch (Exception)
             {
+                _initilized = false;
                 return null;
             }
         }

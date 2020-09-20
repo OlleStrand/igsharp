@@ -17,6 +17,8 @@ namespace Console_Application
             string apiKey = Console.ReadLine();
 
             HttpIGAccountService igService = new HttpIGAccountService(new IGApiAccount(username, password, apiKey));
+
+            Console.ReadKey();
         }
     }
 }
