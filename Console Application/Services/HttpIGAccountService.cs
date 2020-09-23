@@ -14,10 +14,10 @@ namespace Console_Application.Services
     class HttpIGAccountService
     {
         #region Public Properties
-
         public RestClient Client { get; set; }
         public IGApiAccount Account { get; set; }
         public AccountDetails AccountDetails { get; set; }
+        public IGTradeService TradeService { get; set; }
 
         #endregion
 
@@ -25,7 +25,6 @@ namespace Console_Application.Services
 
         private bool _initilized = false;
         private const string URL = "https://demo-api.ig.com/gateway/deal";
-
         #endregion
 
         public HttpIGAccountService(string url = "https://demo-api.ig.com/gateway/deal")
@@ -33,6 +32,7 @@ namespace Console_Application.Services
             try
             {
                 Client = new RestClient(url);
+                TradeService = new IGTradeService(this);
             }
             catch (Exception)
             {
@@ -57,7 +57,7 @@ namespace Console_Application.Services
                 if (!_initilized)
                     AccountDetails = Authenticate();
 
-                Console.WriteLine(AccountDetails.AccountType);
+                TradeService = new IGTradeService(this);
             }
             catch (Exception)
             {
@@ -80,7 +80,7 @@ namespace Console_Application.Services
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
                     //Start reauth method
-
+                    _initilized = true;
                     return JsonConvert.DeserializeObject<AccountDetails>(response.Content);
                 }
 
@@ -91,6 +91,11 @@ namespace Console_Application.Services
                 _initilized = false;
                 return null;
             }
+        }
+
+        public void PlaceOrder()
+        {
+
         }
     }
 }

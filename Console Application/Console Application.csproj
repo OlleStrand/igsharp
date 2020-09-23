@@ -59,7 +59,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\ConfigurationService.cs" />
     <Compile Include="Services\HttpIGAccountService.cs" />
-    <Compile Include="Services\HttpsIGTradeService.cs" />
+    <Compile Include="Services\IGTradeService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
