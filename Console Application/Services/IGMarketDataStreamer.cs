@@ -9,14 +9,8 @@ namespace IgBotTraderCLI.Services
 {
     class IGMarketDataStreamer
     {
-        public delegate void LightstreamerUpdateDelegate(int item, ItemUpdate values);
-        public delegate void LightstreamerStatusChangedDelegate(int cStatus, string status);
-
-        private LightstreamerUpdateDelegate updateDelegate;
-        private LightstreamerStatusChangedDelegate statusChangeDelegate;
-
-        private LightstreamerClient client;
-        private Subscription subscription;
+        private LightstreamerClient Client { get; set; }
+        private Subscription Subscription { get; set; }
 
         public enum ListenerStatus
         {
@@ -29,31 +23,33 @@ namespace IgBotTraderCLI.Services
 
         public IGMarketDataStreamer() { }
 
-        public IGMarketDataStreamer(AccountDetails accountDetails)
+        public IGMarketDataStreamer(AccountDetails accountDetails, IGApiAccount account)
         {
-            CreateClient(accountDetails);
-        }
+            string endpoint = accountDetails.LightstreamerEndpoint;
 
-        public void CreateClient(AccountDetails accountDetails)
-        {
+            Client = new LightstreamerClient(endpoint, "DEMO");
+
+            ConnectionDetails connectionDetails = Client.connectionDetails;
+            connectionDetails.User = accountDetails.CurrentAccountId;
+            connectionDetails.Password = $"CST-{account.CST}|XST-{account.XSecurityToken}";
 
 
-            client = new LightstreamerClient(accountDetails.LightstreamerEndpoint, "DEMO");
+            Client.connect();
             CreateSubscription("IX.D.OMX.IFM.IP");
-
         }
 
         public void CreateSubscription(string market)
         {
-            subscription = new Subscription("MERGE");
+            Subscription = new Subscription("MERGE")
+            {
+                Items = new string[1] { $"MARKET:{market}" },
+                Fields = new string[5] { "UPDATE_TIME", "BID", "OFFER", "CHANGE_PCT", "MARKET_STATE" },
+                DataAdapter = "QUOTE_ADAPTER"
+            };
 
-            subscription.Items = new string[1] { $"MARKET:{market}" };
-            subscription.Fields = new string[5] { "UPDATE_TIME", "BID", "OFFER", "CHANGE_PCT", "MARKET_STATE" };
-            subscription.DataAdapter = "QUOTE_ADAPTER";
+            Subscription.addListener(new MarketListener());
 
-            subscription.addListener(new MarketListener());
-
-            client.subscribe(subscription);
+            Client.subscribe(Subscription);
         }
     }
 

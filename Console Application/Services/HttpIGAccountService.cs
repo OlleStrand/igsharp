@@ -18,11 +18,9 @@ namespace IgBotTraderCLI.Services
         public IGApiAccount Account { get; set; }
         public AccountDetails AccountDetails { get; set; }
         public IGTradeService TradeService { get; set; }
-
         #endregion
 
         #region Private variables
-
         private bool _initilized = false;
         private const string URL = "https://demo-api.ig.com/gateway/deal";
         #endregion
@@ -81,7 +79,7 @@ namespace IgBotTraderCLI.Services
                 {
                     foreach (var item in response.Headers)
                     {
-                        if (apiAccount.CST != "" && apiAccount.XSecurityToken != "")
+                        if (apiAccount.CST != null && apiAccount.XSecurityToken != null)
                             break;
 
                         if (item.Name == "CST")
