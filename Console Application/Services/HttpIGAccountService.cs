@@ -55,7 +55,7 @@ namespace IgBotTraderCLI.Services
                 });
 
                 if (!_initilized)
-                    AccountDetails = Authenticate();
+                    AccountDetails = Authenticate(account);
 
                 TradeService = new IGTradeService(this);
             }
@@ -65,7 +65,7 @@ namespace IgBotTraderCLI.Services
             }
         }
 
-        public AccountDetails Authenticate()
+        public AccountDetails Authenticate(IGApiAccount apiAccount)
         {
             try
             {
@@ -79,6 +79,18 @@ namespace IgBotTraderCLI.Services
 
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
+                    foreach (var item in response.Headers)
+                    {
+                        if (apiAccount.CST != "" && apiAccount.XSecurityToken != "")
+                            break;
+
+                        if (item.Name == "CST")
+                            apiAccount.CST = item.Value.ToString();
+
+                        if (item.Name == "X-SECURITY-TOKEN")
+                            apiAccount.XSecurityToken = item.Value.ToString();
+                    }
+
                     //Start reauth method
                     _initilized = true;
                     return JsonConvert.DeserializeObject<AccountDetails>(response.Content);

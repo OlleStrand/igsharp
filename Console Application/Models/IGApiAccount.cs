@@ -11,6 +11,8 @@ namespace IgBotTraderCLI.Models
         public string Username { get; set; }
         public string Password { get; set; }
         public string ApiKey { get; set; }
+        public string CST { get; set; }
+        public string XSecurityToken { get; set; }
 
         public IGApiAccount() { }
 

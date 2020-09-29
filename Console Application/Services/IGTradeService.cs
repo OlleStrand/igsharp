@@ -47,7 +47,7 @@ namespace IgBotTraderCLI.Services
                 return 0;
 
             return Convert.ToInt32(Math.Floor(
-                (IGAccountService.AccountDetails.AccountInfo.Balance * GetExchangeRate(IGAccountService.AccountDetails.CurrencyIsoCode, marketIsoCode)) /
+                IGAccountService.AccountDetails.AccountInfo.Balance * GetExchangeRate(IGAccountService.AccountDetails.CurrencyIsoCode, marketIsoCode) /
                 (1791 * MARGIN_PERCENT) * accountUsage));
         }
     } 

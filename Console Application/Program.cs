@@ -24,6 +24,8 @@ namespace IgBotTraderCLI
 
             HttpIGAccountService igService = new HttpIGAccountService(new IGApiAccount(username, password, apiKey));
 
+            IGMarketDataStreamer streamer = new IGMarketDataStreamer(igService.AccountDetails);
+
             Console.WriteLine($"{igService.AccountDetails.AccountInfo.Balance} CHF");
             Console.WriteLine($"Order Size: {igService.TradeService.CalculateOrderSize("SEK")}");
 
