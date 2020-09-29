@@ -1,4 +1,4 @@
-﻿using Console_Application.Models;
+﻿using IgBotTraderCLI.Models;
 using RestSharp;
 using System.Net;
 using RestSharp.Authenticators;
@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace Console_Application.Services
+namespace IgBotTraderCLI.Services
 {
     class HttpIGAccountService
     {

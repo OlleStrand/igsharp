@@ -1,4 +1,4 @@
-﻿using Console_Application.Models;
+﻿using IgBotTraderCLI.Models;
 using Newtonsoft.Json;
 using RestSharp;
 using System;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Console_Application.Services
+namespace IgBotTraderCLI.Services
 {
     class IGTradeService
     {

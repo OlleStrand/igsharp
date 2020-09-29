@@ -5,7 +5,7 @@ using Lightstreamer.DotNet.Client;
 using com.lightstreamer.client;
 using System.Collections.Generic;
 
-namespace Console_Application.Services
+namespace IgBotTraderCLI.Services
 {
     class IGMarketDataStreamer
     {
