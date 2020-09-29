@@ -41,12 +41,14 @@ namespace Console_Application.Services
             }
         }
 
-        public int CalculateOrderSize(decimal accountUsage = 1m)
+        public int CalculateOrderSize(string marketIsoCode, decimal accountUsage = 1m)
         {
             if (accountUsage > 1m)
                 return 0;
 
-            return Convert.ToInt32(Math.Floor((IGAccountService.AccountDetails.AccountInfo.Balance * GetExchangeRate("CHF", "SEK")) / (1791 * MARGIN_PERCENT) * accountUsage));
+            return Convert.ToInt32(Math.Floor(
+                (IGAccountService.AccountDetails.AccountInfo.Balance * GetExchangeRate(IGAccountService.AccountDetails.CurrencyIsoCode, marketIsoCode)) /
+                (1791 * MARGIN_PERCENT) * accountUsage));
         }
     } 
 

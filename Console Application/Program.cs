@@ -16,11 +16,10 @@ namespace Console_Application
             string password = Console.ReadLine();
             string apiKey = Console.ReadLine();
 
-            
             HttpIGAccountService igService = new HttpIGAccountService(new IGApiAccount(username, password, apiKey));
 
             Console.WriteLine($"{igService.AccountDetails.AccountInfo.Balance} CHF");
-            Console.WriteLine($"Order Size: {igService.TradeService.CalculateOrderSize()}");
+            Console.WriteLine($"Order Size: {igService.TradeService.CalculateOrderSize("SEK")}");
 
             Console.ReadKey();
         }
