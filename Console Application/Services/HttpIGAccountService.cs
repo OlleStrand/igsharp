@@ -73,8 +73,6 @@ namespace IgBotTraderCLI.Services
 
                 var response = Client.Execute(request);
 
-                Console.WriteLine(response.Content);
-
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
                     foreach (var item in response.Headers)

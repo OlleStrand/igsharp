@@ -39,6 +39,9 @@
     <Reference Include="CookieManager, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\CookieManager.2.0.0\lib\netstandard2.0\CookieManager.dll</HintPath>
     </Reference>
+    <Reference Include="DotNetStandardAdapter, Version=1.12.0.0, Culture=neutral, PublicKeyToken=8d72f58860ac9835, processorArchitecture=MSIL">
+      <HintPath>..\packages\Lightstreamer.DotNetStandard.Adapters.1.12.1\lib\netstandard2.0\DotNetStandardAdapter.dll</HintPath>
+    </Reference>
     <Reference Include="DotNetty.Buffers, Version=0.6.0.0, Culture=neutral, PublicKeyToken=bc13ca065fa06c29, processorArchitecture=MSIL">
       <HintPath>..\packages\DotNetty.Buffers.0.6.0\lib\net45\DotNetty.Buffers.dll</HintPath>
     </Reference>
@@ -322,13 +325,13 @@
     <Compile Include="Services\HttpIGAccountService.cs" />
     <Compile Include="Services\IGMarketDataStreamer.cs" />
     <Compile Include="Services\IGTradeService.cs" />
+    <Compile Include="Singletons\LiveMarketData.cs" />
+    <Compile Include="Strategies\DebugStrategy.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Strategies\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

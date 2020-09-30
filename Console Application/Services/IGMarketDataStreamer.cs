@@ -4,121 +4,90 @@ using Lightstreamer.DotNet.Client;
 using com.lightstreamer.client;
 using System.Collections.Generic;
 using IgBotTraderCLI.Models;
+using Console_Application.Strategies;
+using Console_Application.Listeners;
 
 namespace IgBotTraderCLI.Services
 {
     class IGMarketDataStreamer
     {
-        private LightstreamerClient Client { get; set; }
-        private Subscription Subscription { get; set; }
-
-        public enum ListenerStatus
-        {
-            VOID = -1,
-            DISCONNECTED = 0,
-            POLLING = 1,
-            STREAMING = 2,
-            STALLED = 3
-        }
+        private LSClient Client { get; set; }
 
         public IGMarketDataStreamer() { }
 
         public IGMarketDataStreamer(AccountDetails accountDetails, IGApiAccount account)
         {
-            string endpoint = accountDetails.LightstreamerEndpoint;
+            Client = new LSClient();
+            ConnectionInfo connectionInfo = new ConnectionInfo();
+            connectionInfo.User = accountDetails.Accounts[0].AccountId;
+            connectionInfo.Password = $"CST-{account.CST}|XST-{account.XSecurityToken}";
+            connectionInfo.PushServerUrl = accountDetails.LightstreamerEndpoint;
 
-            Client = new LightstreamerClient(endpoint, "DEMO");
+            Client.OpenConnection(connectionInfo, new ClientConnectionEvents());
 
-            ConnectionDetails connectionDetails = Client.connectionDetails;
-            connectionDetails.User = accountDetails.CurrentAccountId;
-            connectionDetails.Password = $"CST-{account.CST}|XST-{account.XSecurityToken}";
-
-
-            Client.connect();
             CreateSubscription("IX.D.OMX.IFM.IP");
+        }
+
+        public void CloseConnection()
+        {
+            Client.CloseConnection();
         }
 
         public void CreateSubscription(string market)
         {
-            Subscription = new Subscription("MERGE")
-            {
-                Items = new string[1] { $"MARKET:{market}" },
-                Fields = new string[5] { "UPDATE_TIME", "BID", "OFFER", "CHANGE_PCT", "MARKET_STATE" },
-                DataAdapter = "QUOTE_ADAPTER"
-            };
+            ExtendedTableInfo info = new ExtendedTableInfo(
+                new string[1] { $"MARKET:{market}" }, "MERGE",
+                new string[5] { "UPDATE_TIME", "BID", "OFFER", "CHANGE_PCT", "MARKET_STATE" }, true);
 
-            Subscription.addListener(new MarketListener());
-
-            Client.subscribe(Subscription);
+            Client.SubscribeItems(info, new MarketDataListener(new DebugStrategy()));
         }
     }
 
-    class MarketListener : SubscriptionListener
+    class ClientConnectionEvents : IConnectionListener
     {
-        public void onClearSnapshot(string itemName, int itemPos)
+        public void OnActivityWarning(bool warningOn)
         {
-            Console.WriteLine("Clear Snapshot for " + itemName + ".");
+            Console.WriteLine($"OnActivityWarning << Warning: {warningOn}");
         }
 
-        public void onCommandSecondLevelItemLostUpdates(int lostUpdates, string key)
+        public void OnClose()
         {
-            Console.WriteLine("Lost Updates for " + key + " (" + lostUpdates + ").");
+            Console.WriteLine("OnClose << Connection Closed");
         }
 
-        public void onCommandSecondLevelSubscriptionError(int code, string message, string key)
+        public void OnConnectionEstablished()
         {
-            Console.WriteLine("Subscription Error for " + key + ": " + message);
+            Console.WriteLine("OnConnectionEstablished << Connection Established");
         }
 
-        public void onEndOfSnapshot(string itemName, int itemPos)
+        public void OnDataError(PushServerException e)
         {
-            Console.WriteLine("End of Snapshot for " + itemName + ".");
+            Console.WriteLine($"OnDataError << Push DataError: {e.Message}");
         }
 
-        public void onItemLostUpdates(string itemName, int itemPos, int lostUpdates)
+        public void OnEnd(int cause)
         {
-            Console.WriteLine("Lost Updates for " + itemName + " (" + lostUpdates + ").");
+            Console.WriteLine($"OnEnd << {cause}");
         }
 
-        public void onItemUpdate(ItemUpdate itemUpdate)
+        public void OnFailure(PushServerException e)
         {
-            Console.WriteLine("New update for " + itemUpdate.ItemName);
-
-            IDictionary<string, string> listc = itemUpdate.ChangedFields;
-            foreach (string value in listc.Values)
-            {
-                Console.WriteLine(" >>>>>>>>>>>>> " + value);
-            }
+            Console.WriteLine($"OnFailure << Push Failure: {e.Message}");
         }
 
-        public void onListenEnd(Subscription subscription)
+        public void OnFailure(PushConnException e)
         {
-            //throw new NotImplementedException();
+            Console.WriteLine($"OnFailure << Connection Failure: {e.Message}");
         }
 
-        public void onListenStart(Subscription subscription)
+        public void OnNewBytes(long bytes)
         {
-            //throw new NotImplementedException();
+            //Console.WriteLine($"OnNewBytes << {bytes}");
         }
 
-        public void onRealMaxFrequency(string frequency)
+        public void OnSessionStarted(bool isPolling)
         {
-            Console.WriteLine("Real frequency: " + frequency + ".");
-        }
-
-        public void onSubscription()
-        {
-            Console.WriteLine("Start subscription.");
-        }
-
-        public void onSubscriptionError(int code, string message)
-        {
-            Console.WriteLine("Subscription error: " + message);
-        }
-
-        public void onUnsubscription()
-        {
-            Console.WriteLine("Stop subscription.");
+            Console.WriteLine($"OnSessionStarted << Polling: {isPolling}");
         }
     }
 }
