@@ -16,10 +16,14 @@ namespace IgBotTraderCLI.Services
         private HttpIGAccountService IGAccountService { get; set; }
         private RestClient Client { get; set; }
 
-        public IGTradeService(HttpIGAccountService iGAccountService)
+        public IGTradeService()
         {
-            IGAccountService = iGAccountService;
             Client = new RestClient("https://api.exchangeratesapi.io");
+        }
+
+        public void SetAccountServiceToMain()
+        {
+            IGAccountService = HttpIGAccountService.MainIGService;
         }
 
         public decimal GetExchangeRate(string from, string to)
@@ -41,28 +45,28 @@ namespace IgBotTraderCLI.Services
             }
         }
 
-        public int CalculateBuyOrderSize(string marketIsoCode, decimal accountUsage = 1m, int maxOrder = 391)
+        public int CalculateBuyOrderSize(string marketIsoCode, decimal marginPercentage, decimal accountUsage = 1m, int maxOrder = 391)
         {
+            //Must be percentage in decimal form
             if (accountUsage > 1m)
                 return 0;
 
+            //Safety check. Cannot divide with 0
             if (LiveMarketData.Bid == 0)
                 return 0;
 
-            // (20 * pris * 0,75%) / account = ordersize
-
             decimal balance = IGAccountService.AccountDetails.AccountInfo.Balance * GetExchangeRate(IGAccountService.AccountDetails.CurrencyIsoCode, marketIsoCode);
-            decimal margin = 20 * LiveMarketData.Bid * 0.0075m;
+            decimal margin = 20 * LiveMarketData.Bid * marginPercentage;
 
-            decimal count = (balance / margin) * accountUsage;
+            decimal orderSize = (balance / margin) * accountUsage;
 
-            if (count < maxOrder)
-                return Convert.ToInt32(Math.Floor(count));
+            if (orderSize < maxOrder)
+                return Convert.ToInt32(Math.Floor(orderSize));
 
             return maxOrder;
         }
 
-        public int CalculateSellOrderSize(string marketIsoCode, decimal accountUsage = 1m, int maxOrder = 391)
+        public int CalculateSellOrderSize(string marketIsoCode, decimal marginPercentage, decimal accountUsage = 1m, int maxOrder = 391)
         {
             if (accountUsage > 1m)
                 return 0;
@@ -70,15 +74,13 @@ namespace IgBotTraderCLI.Services
             if (LiveMarketData.Offer == 0)
                 return 0;
 
-            // (20 * pris * 0,75%) / account = ordersize
-
             decimal balance = IGAccountService.AccountDetails.AccountInfo.Balance * GetExchangeRate(IGAccountService.AccountDetails.CurrencyIsoCode, marketIsoCode);
-            decimal margin = 20 * LiveMarketData.Offer * 0.0075m;
+            decimal margin = 20 * LiveMarketData.Offer * marginPercentage;
 
-            decimal count = (balance / margin) * accountUsage;
+            decimal orderSize = (balance / margin) * accountUsage;
 
-            if (count < maxOrder)
-                return Convert.ToInt32(Math.Floor(count));
+            if (orderSize < maxOrder)
+                return Convert.ToInt32(Math.Floor(orderSize));
 
             return maxOrder;
         }

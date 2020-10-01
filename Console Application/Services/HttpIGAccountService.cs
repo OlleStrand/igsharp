@@ -14,7 +14,36 @@ namespace IgBotTraderCLI.Services
     class HttpIGAccountService
     {
         #region Public Properties
-        public RestClient Client { get; set; }
+        public static RestClient Client
+        {
+            get
+            {
+                if (client == null)
+                {
+                    lock(clientLock)
+                    {
+                        if (client == null)
+                            client = new RestClient(URL);
+                    }
+                }
+                return client;
+            }
+        }
+        public static HttpIGAccountService MainIGService
+        {
+            get
+            {
+                if (mainService == null)
+                {
+                    lock (serviceLock)
+                    {
+                        if (mainService == null)
+                            mainService = new HttpIGAccountService();
+                    }
+                }
+                return mainService;
+            }
+        }
         public IGApiAccount Account { get; set; }
         public AccountDetails AccountDetails { get; set; }
         public IGTradeService TradeService { get; set; }
@@ -23,14 +52,18 @@ namespace IgBotTraderCLI.Services
         #region Private variables
         private bool _initilized = false;
         private const string URL = "https://demo-api.ig.com/gateway/deal";
+
+        private static RestClient client = null;
+        private static HttpIGAccountService mainService = null;
+        private static readonly object clientLock = new object();
+        private static readonly object serviceLock = new object();
         #endregion
 
-        public HttpIGAccountService(string url = "https://demo-api.ig.com/gateway/deal")
+        public HttpIGAccountService()
         {
             try
             {
-                Client = new RestClient(url);
-                TradeService = new IGTradeService(this);
+                TradeService = new IGTradeService();
             }
             catch (Exception)
             {
@@ -38,24 +71,11 @@ namespace IgBotTraderCLI.Services
             }
         }
 
-        public HttpIGAccountService(IGApiAccount account, string url = "https://demo-api.ig.com/gateway/deal")
+        public HttpIGAccountService(IGApiAccount account, bool canBeMainService = false)
         {
             try
             {
-                Client = new RestClient(url);
-                Account = account;
-
-                Client.AddDefaultHeaders(new Dictionary<string, string>()
-                {
-                    {"Content-Type", "application/json; charset=UTF-8"},
-                    {"Accept", "application/json; charset=UTF-8"},
-                    {"X-IG-API-KEY", Account.ApiKey}
-                });
-
-                if (!_initilized)
-                    AccountDetails = Authenticate(account);
-
-                TradeService = new IGTradeService(this);
+                Initialize(account, canBeMainService);
             }
             catch (Exception)
             {
@@ -63,7 +83,31 @@ namespace IgBotTraderCLI.Services
             }
         }
 
-        public AccountDetails Authenticate(IGApiAccount apiAccount)
+        public void Initialize(IGApiAccount account, bool canBeMainService = false)
+        {
+            Account = account;
+
+            Client.AddDefaultHeaders(new Dictionary<string, string>()
+            {
+                {"Content-Type", "application/json; charset=UTF-8"},
+                {"Accept", "application/json; charset=UTF-8"},
+                {"X-IG-API-KEY", Account.ApiKey}
+            });
+
+            if (!_initilized)
+            {
+                AccountDetails = Authenticate();
+                if (mainService == null && canBeMainService)
+                    lock (serviceLock)
+                        mainService = this;
+            }
+
+            TradeService = new IGTradeService();
+        }
+
+        public void UpdateAccount(IGApiAccount account) => Account = account;
+
+        public AccountDetails Authenticate()
         {
             try
             {
@@ -77,14 +121,14 @@ namespace IgBotTraderCLI.Services
                 {
                     foreach (var item in response.Headers)
                     {
-                        if (apiAccount.CST != null && apiAccount.XSecurityToken != null)
+                        if (Account.CST != null && Account.XSecurityToken != null)
                             break;
 
                         if (item.Name == "CST")
-                            apiAccount.CST = item.Value.ToString();
+                            Account.CST = item.Value.ToString();
 
                         if (item.Name == "X-SECURITY-TOKEN")
-                            apiAccount.XSecurityToken = item.Value.ToString();
+                            Account.XSecurityToken = item.Value.ToString();
                     }
 
                     //Start reauth method

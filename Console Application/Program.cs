@@ -29,7 +29,7 @@ namespace IgBotTraderCLI
             IGMarketDataStreamer streamer = new IGMarketDataStreamer(igService.AccountDetails, igService.Account);
 
             Console.ReadKey();
-            Console.WriteLine($"Order Size: {igService.TradeService.CalculateBuyOrderSize("SEK")}");
+            Console.WriteLine($"Order Size: {igService.TradeService.CalculateBuyOrderSize("SEK", 0.0075m)}");
 
             Console.ReadKey();
             streamer.CloseConnection();

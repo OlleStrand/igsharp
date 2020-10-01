@@ -327,6 +327,8 @@
     <Compile Include="Services\IGTradeService.cs" />
     <Compile Include="Singletons\LiveMarketData.cs" />
     <Compile Include="Strategies\DebugStrategy.cs" />
+	<Compile Include="Listeners\MarketDataListener.cs" />
+	<Compile Include="Interfaces\IStrategy.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

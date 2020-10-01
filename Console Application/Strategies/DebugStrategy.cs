@@ -1,4 +1,5 @@
 ﻿using Console_Application.Singletons;
+using IgBotTraderCLI.Services;
 using Lightstreamer.DotNet.Client;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,8 @@ namespace Console_Application.Strategies
 {
     class DebugStrategy : IStrategy
     {
+        public IGTradeService TradeService { get; set; }
+
         public void UpdateData(int itemPos, string itemName, IUpdateInfo update)
         {
             LiveMarketData.Bid = decimal.Parse(update.GetNewValue("BID"), new CultureInfo("en-US"));

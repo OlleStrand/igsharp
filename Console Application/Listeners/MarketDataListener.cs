@@ -9,8 +9,8 @@ namespace Console_Application.Listeners
     class MarketDataListener : IHandyTableListener
     {
         private List<IStrategy> Strategies { get; set; } = new List<IStrategy>();
-        public MarketDataListener() { }
 
+        public MarketDataListener() { }
         public MarketDataListener(List<IStrategy> strategies) => Strategies = strategies;
         public MarketDataListener(IStrategy strategy) => Strategies.Add(strategy);
 
