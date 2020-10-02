@@ -1,16 +1,11 @@
-﻿using Console_Application.Singletons;
-using IgBotTraderCLI.Services;
+﻿using IgBotTraderCLI.Services;
+using IgBotTraderCLI.Singletons;
 using Lightstreamer.DotNet.Client;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Console_Application.Strategies
+namespace IgBotTraderCLI.Strategies
 {
-    class DebugStrategy : IStrategy
+    internal class DebugStrategy : IStrategy
     {
         public IGTradeService TradeService { get; set; }
 

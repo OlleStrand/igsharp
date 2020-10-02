@@ -1,17 +1,12 @@
-﻿using Console_Application.Singletons;
-using IgBotTraderCLI.Models;
+﻿using IgBotTraderCLI.Singletons;
 using Newtonsoft.Json;
 using RestSharp;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace IgBotTraderCLI.Services
 {
-    class IGTradeService
+    internal class IGTradeService
     {
         private HttpIGAccountService IGAccountService { get; set; }
         private RestClient Client { get; set; }
@@ -40,7 +35,6 @@ namespace IgBotTraderCLI.Services
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
@@ -84,9 +78,9 @@ namespace IgBotTraderCLI.Services
 
             return maxOrder;
         }
-    } 
+    }
 
-    class RatesResponse
+    internal class RatesResponse
     {
         public Dictionary<string, decimal> Rates { get; set; }
     }

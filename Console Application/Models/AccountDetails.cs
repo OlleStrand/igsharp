@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace IgBotTraderCLI.Models
+﻿namespace IgBotTraderCLI.Models
 {
-    class AccountDetails
+    public class AccountDetails
     {
         public string AccountType { get; set; }
         public AccountInfo AccountInfo { get; set; }
@@ -24,7 +18,7 @@ namespace IgBotTraderCLI.Models
         public bool DealingEnabled { get; set; }
     }
 
-    class AccountInfo
+    public class AccountInfo
     {
         public decimal Balance { get; set; }
         public decimal Deposit { get; set; }
@@ -32,7 +26,7 @@ namespace IgBotTraderCLI.Models
         public decimal Available { get; set; }
     }
 
-    class Account
+    public class Account
     {
         public string AccountId { get; set; }
         public string AccountName { get; set; }

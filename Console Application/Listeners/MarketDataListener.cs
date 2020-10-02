@@ -1,17 +1,20 @@
-﻿using Console_Application.Singletons;
-using Lightstreamer.DotNet.Client;
+﻿using Lightstreamer.DotNet.Client;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 
-namespace Console_Application.Listeners
+namespace IgBotTraderCLI.Listeners
 {
-    class MarketDataListener : IHandyTableListener
+    internal class MarketDataListener : IHandyTableListener
     {
         private List<IStrategy> Strategies { get; set; } = new List<IStrategy>();
 
-        public MarketDataListener() { }
+        public MarketDataListener()
+        {
+        }
+
         public MarketDataListener(List<IStrategy> strategies) => Strategies = strategies;
+
         public MarketDataListener(IStrategy strategy) => Strategies.Add(strategy);
 
         public void OnRawUpdatesLost(int itemPos, string itemName, int lostUpdates)

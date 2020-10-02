@@ -1,26 +1,23 @@
 ﻿using IgBotTraderCLI.Models;
+using Newtonsoft.Json;
 using RestSharp;
-using System.Net;
-using RestSharp.Authenticators;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+using System.Net;
 
 namespace IgBotTraderCLI.Services
 {
-    class HttpIGAccountService
+    internal class HttpIGAccountService
     {
         #region Public Properties
+
         public static RestClient Client
         {
             get
             {
                 if (client == null)
                 {
-                    lock(clientLock)
+                    lock (clientLock)
                     {
                         if (client == null)
                             client = new RestClient(URL);
@@ -29,6 +26,7 @@ namespace IgBotTraderCLI.Services
                 return client;
             }
         }
+
         public static HttpIGAccountService MainIGService
         {
             get
@@ -44,12 +42,15 @@ namespace IgBotTraderCLI.Services
                 return mainService;
             }
         }
+
         public IGApiAccount Account { get; set; }
         public AccountDetails AccountDetails { get; set; }
         public IGTradeService TradeService { get; set; }
-        #endregion
+
+        #endregion Public Properties
 
         #region Private variables
+
         private bool _initilized = false;
         private const string URL = "https://demo-api.ig.com/gateway/deal";
 
@@ -57,7 +58,8 @@ namespace IgBotTraderCLI.Services
         private static HttpIGAccountService mainService = null;
         private static readonly object clientLock = new object();
         private static readonly object serviceLock = new object();
-        #endregion
+
+        #endregion Private variables
 
         public HttpIGAccountService()
         {
@@ -85,24 +87,31 @@ namespace IgBotTraderCLI.Services
 
         public void Initialize(IGApiAccount account, bool canBeMainService = false)
         {
-            Account = account;
-
-            Client.AddDefaultHeaders(new Dictionary<string, string>()
+            try
             {
-                {"Content-Type", "application/json; charset=UTF-8"},
-                {"Accept", "application/json; charset=UTF-8"},
-                {"X-IG-API-KEY", Account.ApiKey}
-            });
+                Account = account;
 
-            if (!_initilized)
-            {
-                AccountDetails = Authenticate();
-                if (mainService == null && canBeMainService)
-                    lock (serviceLock)
-                        mainService = this;
+                Client.AddDefaultHeaders(new Dictionary<string, string>()
+                {
+                    {"Content-Type", "application/json; charset=UTF-8"},
+                    {"Accept", "application/json; charset=UTF-8"},
+                    {"X-IG-API-KEY", Account.ApiKey}
+                });
+
+                if (!_initilized)
+                {
+                    AccountDetails = Authenticate();
+                    if (mainService == null && canBeMainService)
+                        lock (serviceLock)
+                            mainService = this;
+                }
+
+                TradeService = new IGTradeService();
             }
-
-            TradeService = new IGTradeService();
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public void UpdateAccount(IGApiAccount account) => Account = account;
@@ -147,7 +156,6 @@ namespace IgBotTraderCLI.Services
 
         public void PlaceOrder()
         {
-
         }
     }
 }

@@ -22,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -31,6 +32,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Akka, Version=1.3.11.0, Culture=neutral, processorArchitecture=MSIL">
@@ -317,6 +319,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Listeners\MarketDataListener.cs" />
+    <Compile Include="Interfaces\IStrategy.cs" />
     <Compile Include="Models\AccountDetails.cs" />
     <Compile Include="Models\IGApiAccount.cs" />
     <Compile Include="Program.cs" />
@@ -327,11 +331,12 @@
     <Compile Include="Services\IGTradeService.cs" />
     <Compile Include="Singletons\LiveMarketData.cs" />
     <Compile Include="Strategies\DebugStrategy.cs" />
-	<Compile Include="Listeners\MarketDataListener.cs" />
-	<Compile Include="Interfaces\IStrategy.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="config.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />

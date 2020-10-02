@@ -1,19 +1,18 @@
-﻿using System;
-using System.Threading;
-using Lightstreamer.DotNet.Client;
-using com.lightstreamer.client;
-using System.Collections.Generic;
+﻿using IgBotTraderCLI.Listeners;
 using IgBotTraderCLI.Models;
-using Console_Application.Strategies;
-using Console_Application.Listeners;
+using IgBotTraderCLI.Strategies;
+using Lightstreamer.DotNet.Client;
+using System;
 
 namespace IgBotTraderCLI.Services
 {
-    class IGMarketDataStreamer
+    internal class IGMarketDataStreamer
     {
         private LSClient Client { get; set; }
 
-        public IGMarketDataStreamer() { }
+        public IGMarketDataStreamer()
+        {
+        }
 
         public IGMarketDataStreamer(AccountDetails accountDetails, IGApiAccount account)
         {
@@ -43,7 +42,7 @@ namespace IgBotTraderCLI.Services
         }
     }
 
-    class ClientConnectionEvents : IConnectionListener
+    internal class ClientConnectionEvents : IConnectionListener
     {
         public void OnActivityWarning(bool warningOn)
         {

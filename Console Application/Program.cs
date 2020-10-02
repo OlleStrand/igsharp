@@ -1,38 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Console_Application.Singletons;
-using IgBotTraderCLI.Models;
-using IgBotTraderCLI.Services;
+﻿using IgBotTraderCLI.Services;
+using System;
 
 namespace IgBotTraderCLI
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static IGMarketDataStreamer streamer;
+
+        private static void Main(string[] args)
         {
-            /*
-            string username = Console.ReadLine();
-            string password = Console.ReadLine();
-            string apiKey = Console.ReadLine();
-            */
+            AppDomain.CurrentDomain.ProcessExit += new EventHandler(ProgramExit);
 
-            string username = "ollesapi";
-            string password = "Ollesapi_1";
-            string apiKey = "77d3fdd8a0fe83431935a9e79e7e6255c05ba115";
-
-            HttpIGAccountService igService = new HttpIGAccountService(new IGApiAccount(username, password, apiKey));
+            HttpIGAccountService igService = new HttpIGAccountService(ConfigurationService.LoadAccountDetails(), true);
             Console.WriteLine($"Bank Balance: {igService.AccountDetails.AccountInfo.Balance} {igService.AccountDetails.CurrencyIsoCode}");
 
-            IGMarketDataStreamer streamer = new IGMarketDataStreamer(igService.AccountDetails, igService.Account);
+            igService.TradeService.SetAccountServiceToMain();
+            streamer = new IGMarketDataStreamer(igService.AccountDetails, igService.Account);
 
             Console.ReadKey();
-            Console.WriteLine($"Order Size: {igService.TradeService.CalculateBuyOrderSize("SEK", 0.0075m)}");
+            Console.WriteLine($"Order Size: {igService.TradeService.CalculateBuyOrderSize("SEK", 0.0075m, 0.25m, 200)}");
 
             Console.ReadKey();
-            streamer.CloseConnection();
+        }
+
+        private static void ProgramExit(object sender, EventArgs e)
+        {
+            try
+            {
+                if (streamer != null)
+                {
+                    streamer.CloseConnection();
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Console_Application.Singletons
+namespace IgBotTraderCLI.Singletons
 {
     public static class LiveMarketData
     {
-        static LiveMarketData() { }
+        static LiveMarketData()
+        {
+        }
 
         public static decimal Bid { get; set; }
         public static decimal Offer { get; set; }

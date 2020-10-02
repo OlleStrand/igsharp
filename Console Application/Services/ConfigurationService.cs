@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using IgBotTraderCLI.Models;
+using Newtonsoft.Json;
+using System;
+using System.IO;
 
 namespace IgBotTraderCLI.Services
 {
-    class ConfigurationService
+    public static class ConfigurationService
     {
+        public static IGApiAccount LoadAccountDetails() => JsonConvert.DeserializeObject<IGApiAccount>(File.ReadAllText(Environment.CurrentDirectory + "\\config.json"));
     }
 }

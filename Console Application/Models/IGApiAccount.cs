@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace IgBotTraderCLI.Models
+﻿namespace IgBotTraderCLI.Models
 {
-    class IGApiAccount
+    public class IGApiAccount
     {
         public string Username { get; set; }
         public string Password { get; set; }
@@ -14,7 +8,9 @@ namespace IgBotTraderCLI.Models
         public string CST { get; set; }
         public string XSecurityToken { get; set; }
 
-        public IGApiAccount() { }
+        public IGApiAccount()
+        {
+        }
 
         public IGApiAccount(string username, string password, string apikey)
         {
