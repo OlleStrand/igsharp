@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Console Application", "Console Application\Console Application.csproj", "{C897CB1C-3880-41E5-9484-969DE6BAF9C0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IgBotTraderCLI", "IgBotTraderCLI\IgBotTraderCLI.csproj", "{C897CB1C-3880-41E5-9484-969DE6BAF9C0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
