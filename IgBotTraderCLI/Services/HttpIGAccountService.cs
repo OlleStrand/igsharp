@@ -7,7 +7,7 @@ using System.Net;
 
 namespace IgBotTraderCLI.Services
 {
-    internal class HttpIGAccountService
+    public class HttpIGAccountService
     {
         #region Public Properties
 
@@ -45,7 +45,6 @@ namespace IgBotTraderCLI.Services
 
         public IGApiAccount Account { get; set; }
         public AccountDetails AccountDetails { get; set; }
-        public IGTradeService TradeService { get; set; }
 
         #endregion Public Properties
 
@@ -63,14 +62,6 @@ namespace IgBotTraderCLI.Services
 
         public HttpIGAccountService()
         {
-            try
-            {
-                TradeService = new IGTradeService();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
         }
 
         public HttpIGAccountService(IGApiAccount account, bool canBeMainService = false)
@@ -105,8 +96,6 @@ namespace IgBotTraderCLI.Services
                         lock (serviceLock)
                             mainService = this;
                 }
-
-                TradeService = new IGTradeService();
             }
             catch (Exception)
             {
@@ -140,6 +129,12 @@ namespace IgBotTraderCLI.Services
                             Account.XSecurityToken = item.Value.ToString();
                     }
 
+                    Client.AddDefaultHeaders(new Dictionary<string, string>()
+                    {
+                        {"X-SECURITY-TOKEN", Account.XSecurityToken},
+                        {"CST", Account.CST}
+                    });
+
                     //Start reauth method
                     _initilized = true;
                     return JsonConvert.DeserializeObject<AccountDetails>(response.Content);
@@ -154,8 +149,28 @@ namespace IgBotTraderCLI.Services
             }
         }
 
-        public void PlaceOrder()
+        public string PlaceOrder(string epic, string direction, int size, string currency)
         {
+            try
+            {
+                var request = new RestRequest("positions/otc", Method.POST)
+                    .AddHeader("Version", "2")
+                    .AddJsonBody(new PositionOrder(epic, direction, size, currency));
+
+                var response = Client.Execute(request);
+
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    return JsonConvert.DeserializeObject<DealPlaced>(response.Content).DealReference;
+                }
+
+                return null;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
     }
 }

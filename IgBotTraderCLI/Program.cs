@@ -14,11 +14,14 @@ namespace IgBotTraderCLI
             HttpIGAccountService igService = new HttpIGAccountService(ConfigurationService.LoadAccountDetails(), true);
             Console.WriteLine($"Bank Balance: {igService.AccountDetails.AccountInfo.Balance} {igService.AccountDetails.CurrencyIsoCode}");
 
-            igService.TradeService.SetAccountServiceToMain();
+            IGTradeService tradeService = new IGTradeService();
+            tradeService.SetAccountServiceToMain();
             streamer = new IGMarketDataStreamer(igService.AccountDetails, igService.Account);
 
+            //igService.PlaceOrder("IX.D.OMX.IFM.IP", "BUY", 10, "SEK");
+
             Console.ReadKey();
-            Console.WriteLine($"Order Size: {igService.TradeService.CalculateBuyOrderSize("SEK", 0.0075m, 0.25m, 200)}");
+            Console.WriteLine($"Order Size: {tradeService.CalculateBuyOrderSize("SEK", 0.0075m, 0.25m, 100)}");
 
             Console.ReadKey();
         }

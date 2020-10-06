@@ -1,4 +1,4 @@
-﻿using IgBotTraderCLI.Singletons;
+﻿using IgBotTraderCLI.Models;
 using Newtonsoft.Json;
 using RestSharp;
 using System;
@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace IgBotTraderCLI.Services
 {
-    internal class IGTradeService
+    public class IGTradeService
     {
         private HttpIGAccountService IGAccountService { get; set; }
         private RestClient Client { get; set; }
@@ -19,6 +19,11 @@ namespace IgBotTraderCLI.Services
         public void SetAccountServiceToMain()
         {
             IGAccountService = HttpIGAccountService.MainIGService;
+        }
+
+        public void SetAccountService(HttpIGAccountService httpIGAccountService)
+        {
+            IGAccountService = httpIGAccountService;
         }
 
         public decimal GetExchangeRate(string from, string to)
@@ -78,6 +83,9 @@ namespace IgBotTraderCLI.Services
 
             return maxOrder;
         }
+
+        public string PlaceOrder(string epic, string direction, int size, string currency) =>
+            IGAccountService.PlaceOrder(epic, direction, size, currency);
     }
 
     internal class RatesResponse
