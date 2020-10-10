@@ -317,6 +317,15 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
+    <Reference Include="TANet.Contracts">
+      <HintPath>..\..\TANet\TANet.Core\bin\Debug\netstandard2.0\TANet.Contracts.dll</HintPath>
+    </Reference>
+    <Reference Include="TANet.Core">
+      <HintPath>..\..\TANet\TANet.Core\bin\Debug\netstandard2.0\TANet.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="TANet.Util">
+      <HintPath>..\..\TANet\TANet.Core\bin\Debug\netstandard2.0\TANet.Util.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Listeners\MarketDataListener.cs" />

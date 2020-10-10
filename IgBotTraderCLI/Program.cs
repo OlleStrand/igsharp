@@ -1,5 +1,6 @@
 ﻿using IgBotTraderCLI.Services;
 using System;
+using TANet.Core;
 
 namespace IgBotTraderCLI
 {
@@ -19,6 +20,9 @@ namespace IgBotTraderCLI
             streamer = new IGMarketDataStreamer(igService.AccountDetails, igService.Account);
 
             //igService.PlaceOrder("IX.D.OMX.IFM.IP", "BUY", 10, "SEK");
+
+
+
 
             Console.ReadKey();
             Console.WriteLine($"Order Size: {tradeService.CalculateBuyOrderSize("SEK", 0.0075m, 0.25m, 100)}");
