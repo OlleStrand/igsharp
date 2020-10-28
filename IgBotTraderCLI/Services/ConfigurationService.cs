@@ -7,6 +7,7 @@ namespace IgBotTraderCLI.Services
 {
     public static class ConfigurationService
     {
-        public static IGApiAccount LoadAccountDetails() => JsonConvert.DeserializeObject<IGApiAccount>(File.ReadAllText(Environment.CurrentDirectory + "\\config.json"));
+        public static IGApiAccount LoadAccountDetails() => JsonConvert.DeserializeObject<IGApiAccount>(
+            File.ReadAllText(Environment.CurrentDirectory + "\\config.json"));
     }
 }

@@ -317,24 +317,20 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
-    <Reference Include="TANet.Contracts">
-      <HintPath>..\..\TANet\TANet.Core\bin\Debug\netstandard2.0\TANet.Contracts.dll</HintPath>
-    </Reference>
-    <Reference Include="TANet.Core">
-      <HintPath>..\..\TANet\TANet.Core\bin\Debug\netstandard2.0\TANet.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="TANet.Util">
-      <HintPath>..\..\TANet\TANet.Core\bin\Debug\netstandard2.0\TANet.Util.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Indicators\ExponentialMovingAverage.cs" />
+    <Compile Include="Indicators\SimpleMovingAverage.cs" />
     <Compile Include="Listeners\MarketDataListener.cs" />
     <Compile Include="Models\AccountDetails.cs" />
+    <Compile Include="Models\HistoricalData.cs" />
     <Compile Include="Models\IGApiAccount.cs" />
+    <Compile Include="Models\IGHistoricalData.cs" />
     <Compile Include="Models\PositionOrder.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\ConfigurationService.cs" />
+    <Compile Include="Services\HistoricalDataService.cs" />
     <Compile Include="Services\HttpIGAccountService.cs" />
     <Compile Include="Services\IGMarketDataStreamer.cs" />
     <Compile Include="Services\IGTradeService.cs" />

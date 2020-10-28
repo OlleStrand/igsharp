@@ -20,7 +20,5 @@ namespace IgBotTraderCLI.Strategies
             LiveMarketData.Bid = decimal.Parse(update.GetNewValue("BID"), new CultureInfo("en-US"));
             LiveMarketData.Offer = decimal.Parse(update.GetNewValue("OFFER"), new CultureInfo("en-US"));
         }
-
-        
     }
 }

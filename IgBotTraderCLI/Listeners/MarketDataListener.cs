@@ -40,8 +40,17 @@ namespace IgBotTraderCLI.Listeners
         #region IHandyTableListener
         public void OnUpdate(int itemPos, string itemName, IUpdateInfo update)
         {
-            decimal mid = (decimal.Parse(update.GetNewValue("BID"), new CultureInfo("en-US")) + decimal.Parse(update.GetNewValue("OFFER"), new CultureInfo("en-US"))) / 2m;
-
+            decimal mid;
+            try
+            {
+                mid = (decimal.Parse(update.GetNewValue("BID"), new CultureInfo("en-US"))
+                    + decimal.Parse(update.GetNewValue("OFFER"), new CultureInfo("en-US"))) / 2m;
+            }
+            catch (Exception)
+            {
+                return;
+            }
+            
             Console.WriteLine($"{update.GetNewValue("UPDATE_TIME")} - {itemName} >> {update.GetNewValue("OFFER")} | {update.GetNewValue("BID")} | {mid.ToString(new CultureInfo("en-US"))}");
 
             UpdatePeriod(decimal.Parse(update.GetNewValue("BID"), new CultureInfo("en-US")), Period15, 15);

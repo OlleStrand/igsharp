@@ -15,10 +15,9 @@ namespace IgBotTraderCLI.Strategies
         public abstract string StrategyName { get; protected set; }
         public abstract void UpdateData(int itemPos, string itemName, IUpdateInfo update);
 
-        public virtual void PlaceOrder(string epic, string direction, int size, string currency)
+        public virtual void OpenPosition(string epic, string direction, int size, string currency)
         {
-            if (TradeService == null)
-                return;
+            if (TradeService == null) return;
 
             try
             {

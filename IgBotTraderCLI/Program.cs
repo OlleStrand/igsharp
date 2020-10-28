@@ -1,6 +1,6 @@
-﻿using IgBotTraderCLI.Services;
+﻿using IgBotTraderCLI.Indicators;
+using IgBotTraderCLI.Services;
 using System;
-using TANet.Core;
 
 namespace IgBotTraderCLI
 {
@@ -12,12 +12,21 @@ namespace IgBotTraderCLI
         {
             AppDomain.CurrentDomain.ProcessExit += new EventHandler(ProgramExit);
 
+            HistoricalDataService dataService = new HistoricalDataService();
+
             HttpIGAccountService igService = new HttpIGAccountService(ConfigurationService.LoadAccountDetails(), true);
             Console.WriteLine($"Bank Balance: {igService.AccountDetails.AccountInfo.Balance} {igService.AccountDetails.CurrencyIsoCode}");
 
             IGTradeService tradeService = new IGTradeService();
             tradeService.SetAccountServiceToMain();
             streamer = new IGMarketDataStreamer(igService.AccountDetails, igService.Account);
+
+            dataService.LoadIGHistoricalData("IX.D.OMX.IFM.IP", "MINUTE_15", 51);
+
+            decimal[] values = dataService.OhlcListToArray(51, dataService.HistoricalDataIG);
+
+            var SMA = new SimpleMovingAverage(values, 50).Sma();
+            var EMA = new ExponentialMovingAverage(values, 12).Ema();
 
             //igService.PlaceOrder("IX.D.OMX.IFM.IP", "BUY", 10, "SEK");
 
@@ -38,7 +47,6 @@ namespace IgBotTraderCLI
             }
             catch (Exception)
             {
-                throw;
             }
         }
     }
